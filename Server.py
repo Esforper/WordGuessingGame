@@ -13,7 +13,8 @@ def main(connection):
     word = word.upper()
     
     formatted_word = word[0].upper() + " " + " ".join("*" for _ in range(len(word)-1))
-    connection.sendall(f"Kelimeniz : {formatted_word}\nTahmin 1:".encode())    #ilk gönderiş (server -> client)
+    connection.sendall(f"Kelimeniz : {formatted_word}\nTahmin 1:".encode()) #Give first clue about the word
+    #message forward to client (server -> client)
     
     for guess_num in range(2, 7):
         guess = connection.recv(1024).strip().decode().upper() #tahmini kullanıcan al (client -> server)
@@ -27,12 +28,6 @@ def main(connection):
             break
         
         connection.sendall(f"{result}\nTahmin {guess_num}: ".encode())
-    # Post-process
-    #else:
-        #print(f"Dogru kelime {word}")
-        #connection.sendall(f"\nDogru kelime {word}\n Bitti".encode())
-        
-        #connection.sendall("Bitti".encode())
 
 
 def show_guess(guess, word, connection):
@@ -47,11 +42,9 @@ def show_guess(guess, word, connection):
 
     result = " ".join(feedback)
     return result
-    #connection.sendall(result.encode())
 
 def start_game(connection):
     main(connection)
-    #connection.sendall("".encode())  # İstemciye son veriyi gönder
     connection.close()
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
